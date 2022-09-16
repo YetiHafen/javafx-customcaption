@@ -70,14 +70,11 @@ public class CustomizedStage {
     }
 
     private void onParentChange(ObservableValue<? extends Parent> observable, Parent oldVal, Parent newVal) {
-        System.out.println("trigger");
         if(newRoot == newVal) return;
-
         addControlsToParent(newVal);
     }
 
     private void onSceneChange(ObservableValue<? extends Scene> observable, Scene oldVal, Scene newVal) {
-        System.out.println("trigger2");
         oldVal.rootProperty().removeListener(this::onParentChange);
         newVal.rootProperty().addListener(this::onParentChange);
         addControlsToParent(newVal.getRoot());
