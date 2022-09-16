@@ -1,0 +1,21 @@
+.caption .button {
+    -fx-background-color: transparent;
+
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+
+    -fx-pref-height: Infinity;
+    -fx-border-radius: 0;
+    -fx-border-style: none;
+
+    -fx-font-family: "Segoe Fluent Icons", "Segoe MDL2 Assets", "Segoe UI", "arial";
+    -fx-font-size: 10px;
+
+    -fx-pref-width: 46px;
+    -fx-min-width: 46px;
+    -fx-max-width: 46px;
+}
+
+.caption {
+    -fx-min-height: 31px;
+}
