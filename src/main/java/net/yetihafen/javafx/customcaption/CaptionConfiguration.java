@@ -18,6 +18,11 @@ public class CaptionConfiguration {
     @Getter @Setter
     private Color controlBackgroundColor;
 
+    @Getter @Setter
+    private Color buttonHoverColor = Color.GRAY;
+    @Getter @Setter
+    private Color closeButtonHoverColor = Color.RED;
+
 
     public CaptionConfiguration() {
         this(31);

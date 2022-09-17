@@ -3,6 +3,7 @@ package net.yetihafen.javafx.customcaption.internal;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.BaseTSD;
 import com.sun.jna.platform.win32.WinDef;
+import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.platform.win32.WinUser;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
@@ -14,8 +15,11 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import lombok.Getter;
 import net.yetihafen.javafx.customcaption.CaptionConfiguration;
+import net.yetihafen.javafx.customcaption.internal.libraries.DwmApi;
 import net.yetihafen.javafx.customcaption.internal.libraries.User32Ex;
+import net.yetihafen.javafx.customcaption.internal.structs.DWMWINDOWATTRIBUTE;
 import net.yetihafen.javafx.customcaption.internal.structs.NCCALCSIZE_PARAMS;
+import net.yetihafen.javafx.customcaption.internal.structs.TRACKMOUSEEVENT;
 
 import java.io.IOException;
 
@@ -111,6 +115,8 @@ public class CustomizedStage {
         private static final int WM_NCHITTEST = 0x0084;
         private static final int WM_NCMOUSEMOVE = 0x00A0;
         private static final int WM_NCLBUTTONDOWN = 0x00A1;
+        private static final int WM_MOUSELEAVE = 0x02A3;
+        private static final int WM_NCMOUSELEAVE = 0x02A2;
         private static final int HTCLIENT = 1;
         private static final int HTCAPTION = 2;
         private static final int HTMAXBUTTON = 9;
@@ -119,6 +125,9 @@ public class CustomizedStage {
         private static final int HTTOP = 12;
         private static final int SC_CLOSE = 0xF060;
         private static final int SC_RESTORE = 0xF120;
+        private static final int TME_LEAVE = 0x00000002;
+        private static final int TME_NONCLIENT = 0x00000010;
+        private static final int HOVER_DEFAULT = 0xFFFFFFFF;
 
         static final int BUTTON_WIDTH = 46;
 
@@ -128,7 +137,44 @@ public class CustomizedStage {
                 case WM_NCCALCSIZE -> onWmNcCalcSize(hWnd, msg, wParam, lParam);
                 case WM_NCHITTEST -> onWmNcHitTest(hWnd, msg, wParam, lParam);
                 case WM_NCLBUTTONDOWN -> onWmNcLButtonDown(hWnd, msg, wParam, lParam);
+                case WM_NCMOUSEMOVE -> onWmNcMouseMove(hWnd, msg, wParam, lParam);
+                case WM_NCMOUSELEAVE, WM_MOUSELEAVE -> {
+                    controller.hoverButton(null);
+                    yield DefWndProc(hWnd, msg, wParam, lParam);
+                }
                 default -> DefWndProc(hWnd, msg, wParam, lParam);
+            };
+        }
+
+        private WinDef.LRESULT onWmNcMouseMove(WinDef.HWND hWnd, int msg, WinDef.WPARAM wParam, WinDef.LPARAM lParam) {
+            int position = wParam.intValue();
+
+            if(position == HTCLOSE || position == HTMAXBUTTON || position == HTMINBUTTON) {
+                TRACKMOUSEEVENT ev = new TRACKMOUSEEVENT();
+                ev.cbSize = new WinDef.DWORD(ev.size());
+                ev.dwFlags = new WinDef.DWORD(TME_LEAVE | TME_NONCLIENT);
+                ev.hwndTrack = hWnd;
+                ev.dwHoverTime = new WinDef.DWORD(HOVER_DEFAULT);
+                User32Ex.INSTANCE.TrackMouseEvent(ev);
+            }
+
+            return switch(position) {
+                case HTCLOSE -> {
+                    controller.hoverButton(ControlsController.CaptionButton.CLOSE);
+                    yield new WinDef.LRESULT(0);
+                }
+                case HTMAXBUTTON -> {
+                    controller.hoverButton(ControlsController.CaptionButton.MAXIMIZE_RESTORE);
+                    yield new WinDef.LRESULT(0);
+                }
+                case HTMINBUTTON -> {
+                    controller.hoverButton(ControlsController.CaptionButton.MINIMIZE);
+                    yield new WinDef.LRESULT(0);
+                }
+                default -> {
+                    controller.hoverButton(null);
+                    yield DefWndProc(hWnd, msg, wParam, lParam);
+                }
             };
         }
 
@@ -155,21 +201,16 @@ public class CustomizedStage {
 
         private WinDef.LRESULT onWmNcHitTest(WinDef.HWND hWnd, int msg, WinDef.WPARAM wParam, WinDef.LPARAM lParam) {
             WinDef.RECT rect = new WinDef.RECT();
-            User32Ex.INSTANCE.GetWindowRect(hWnd, rect);
-
+            User32Ex.INSTANCE.GetClientRect(hWnd, rect);
 
             int x = GET_X_LPARAM(lParam);
             int y = GET_Y_LPARAM(lParam);
 
-            boolean maximized = NativeUtilities.isMaximized(hWnd);
+            WinDef.POINT point = new WinDef.POINT(x, y);
+            User32Ex.INSTANCE.ScreenToClient(hWnd, point);
 
-
-            if(maximized && !stage.isFullScreen()) {
-                y -= NativeUtilities.getResizeHandleHeight(hWnd);
-            }
-
-            x -= rect.left;
-            y -= rect.top;
+            x = point.x;
+            y = point.y;
 
             int width = rect.right - rect.left;
 

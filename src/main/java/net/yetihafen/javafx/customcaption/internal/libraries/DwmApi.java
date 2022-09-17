@@ -2,6 +2,7 @@ package net.yetihafen.javafx.customcaption.internal.libraries;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import com.sun.jna.platform.win32.BaseTSD;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.ptr.IntByReference;

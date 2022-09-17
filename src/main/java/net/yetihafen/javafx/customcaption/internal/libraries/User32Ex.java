@@ -3,6 +3,7 @@ package net.yetihafen.javafx.customcaption.internal.libraries;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.win32.W32APIOptions;
+import net.yetihafen.javafx.customcaption.internal.structs.TRACKMOUSEEVENT;
 
 public interface User32Ex extends User32 {
 
@@ -35,4 +36,10 @@ public interface User32Ex extends User32 {
 
     // https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-adjustwindowrectexfordpi
     boolean AdjustWindowRectExForDpi(RECT lpRect, int dwStyle, boolean bMenu, int dwExStyle, int dpi);
+
+    // https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackmouseevent
+    boolean TrackMouseEvent(TRACKMOUSEEVENT lpEventTrack);
+
+    // https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-screentoclient
+    boolean ScreenToClient(HWND hWnd, POINT lpPoint);
 }
