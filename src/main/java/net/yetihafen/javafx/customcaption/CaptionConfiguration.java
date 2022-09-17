@@ -13,7 +13,7 @@ public class CaptionConfiguration {
     private int captionHeight;
 
     @Getter @Setter
-    private Color controlForegroundColor;
+    private Color iconColor;
 
     @Getter @Setter
     private Color controlBackgroundColor;
@@ -35,13 +35,13 @@ public class CaptionConfiguration {
         this(captionHeight, Color.web("#A9A9A9"));
     }
 
-    public CaptionConfiguration(int captionHeight, Color controlForegroundColor) {
-        this(captionHeight, controlForegroundColor, Color.TRANSPARENT);
+    public CaptionConfiguration(int captionHeight, Color iconColor) {
+        this(captionHeight, iconColor, Color.TRANSPARENT);
     }
 
-    public CaptionConfiguration(int captionHeight, Color controlForegroundColor, Color controlBackgroundColor) {
+    public CaptionConfiguration(int captionHeight, Color iconColor, Color controlBackgroundColor) {
         this.captionHeight = captionHeight;
-        this.controlForegroundColor = controlForegroundColor;
+        this.iconColor = iconColor;
         this.controlBackgroundColor = controlBackgroundColor;
     }
 }

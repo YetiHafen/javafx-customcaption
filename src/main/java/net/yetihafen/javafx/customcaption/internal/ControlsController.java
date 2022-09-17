@@ -36,14 +36,12 @@ public class ControlsController implements Initializable {
     public void applyConfig(CaptionConfiguration config) {
         this.config = config;
         for(Button button : buttons) {
-            button.setStyle(
-                    "-fx-text-fill: " + colorToWeb(config.getControlForegroundColor()) + ";" +
-                            "-fx-background-color: " + colorToWeb(config.getControlBackgroundColor()) + ";"
-            );
+            button.setTextFill(config.getIconColor());
+            button.setBackground(new Background(new BackgroundFill(config.getControlBackgroundColor(), null, null)));
         }
 
-        root.setStyle("-fx-pref-height: " + config.getCaptionHeight() + "px;"+
-                "-fx-max-height: " + config.getCaptionHeight() + "px;");
+        root.setPrefHeight(config.getCaptionHeight());
+        root.setMaxHeight(config.getCaptionHeight());
     }
 
 
@@ -54,8 +52,8 @@ public class ControlsController implements Initializable {
             case MINIMIZE -> minimizeButton;
         } : null;
 
-        buttons.forEach(btn -> btn.setBackground(new Background(new BackgroundFill(config.getControlBackgroundColor(), CornerRadii.EMPTY, Insets.EMPTY))));
-        buttons.forEach(btn -> btn.setTextFill(config.getButtonHoverColor()));
+        buttons.forEach(btn -> btn.setBackground(new Background(new BackgroundFill(config.getControlBackgroundColor(), null, null))));
+        buttons.forEach(btn -> btn.setTextFill(config.getIconColor()));
 
         if(button == null) return;
 
@@ -77,14 +75,6 @@ public class ControlsController implements Initializable {
         buttons.add(maximizeRestoreButton);
         buttons.add(closeButton);
         buttons.add(minimizeButton);
-    }
-
-    private static String colorToWeb(Color color) {
-        return String.format("#%02X%02X%02X%02X",
-                (int)(color.getRed() * 255),
-                (int)(color.getGreen() * 255),
-                (int)(color.getBlue() * 255 ),
-                (int)(color.getOpacity() * 255));
     }
 
     public enum CaptionButton {
