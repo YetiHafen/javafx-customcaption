@@ -1,5 +1,6 @@
 package net.yetihafen.javafx.customcaption.internal;
 
+import com.sun.jna.platform.win32.WinDef;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -54,12 +55,21 @@ public class ControlsController implements Initializable {
         } : null;
 
         buttons.forEach(btn -> btn.setBackground(new Background(new BackgroundFill(config.getControlBackgroundColor(), CornerRadii.EMPTY, Insets.EMPTY))));
+        buttons.forEach(btn -> btn.setTextFill(config.getButtonHoverColor()));
 
         if(button == null) return;
 
         Color bgColor = hoveredButton == CaptionButton.CLOSE ? config.getCloseButtonHoverColor() : config.getButtonHoverColor();
 
         button.setBackground(new Background(new BackgroundFill(bgColor, CornerRadii.EMPTY, Insets.EMPTY)));
+        button.setTextFill(config.getIconHoverColor());
+    }
+
+    public void onResize(WinDef.WPARAM wParam) {
+        switch (wParam.intValue()) {
+            case 2 /*SIZE_MAXIMIZED*/ -> maximizeRestoreButton.setText("\uE923");
+            case 0 /*SIZE_RESTORED*/ -> maximizeRestoreButton.setText("\uE922");
+        }
     }
 
     @Override

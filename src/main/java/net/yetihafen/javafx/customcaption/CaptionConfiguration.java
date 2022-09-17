@@ -19,9 +19,12 @@ public class CaptionConfiguration {
     private Color controlBackgroundColor;
 
     @Getter @Setter
-    private Color buttonHoverColor = Color.GRAY;
+    private Color buttonHoverColor = Color.web("#808080");
     @Getter @Setter
     private Color closeButtonHoverColor = Color.RED;
+
+    @Getter @Setter
+    private Color iconHoverColor = Color.WHITE;
 
 
     public CaptionConfiguration() {

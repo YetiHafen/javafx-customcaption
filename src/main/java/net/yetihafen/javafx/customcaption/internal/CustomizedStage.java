@@ -3,7 +3,6 @@ package net.yetihafen.javafx.customcaption.internal;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.BaseTSD;
 import com.sun.jna.platform.win32.WinDef;
-import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.platform.win32.WinUser;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
@@ -15,16 +14,13 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import lombok.Getter;
 import net.yetihafen.javafx.customcaption.CaptionConfiguration;
-import net.yetihafen.javafx.customcaption.internal.libraries.DwmApi;
 import net.yetihafen.javafx.customcaption.internal.libraries.User32Ex;
-import net.yetihafen.javafx.customcaption.internal.structs.DWMWINDOWATTRIBUTE;
 import net.yetihafen.javafx.customcaption.internal.structs.NCCALCSIZE_PARAMS;
 import net.yetihafen.javafx.customcaption.internal.structs.TRACKMOUSEEVENT;
 
 import java.io.IOException;
 
-import static com.sun.jna.platform.win32.WinUser.SC_MAXIMIZE;
-import static com.sun.jna.platform.win32.WinUser.SC_MINIMIZE;
+import static com.sun.jna.platform.win32.WinUser.*;
 
 
 public class CustomizedStage {
@@ -140,6 +136,11 @@ public class CustomizedStage {
                 case WM_NCMOUSEMOVE -> onWmNcMouseMove(hWnd, msg, wParam, lParam);
                 case WM_NCMOUSELEAVE, WM_MOUSELEAVE -> {
                     controller.hoverButton(null);
+                    yield DefWndProc(hWnd, msg, wParam, lParam);
+                }
+                case WM_SIZE -> {
+                    if(controller != null)
+                        controller.onResize(wParam);
                     yield DefWndProc(hWnd, msg, wParam, lParam);
                 }
                 default -> DefWndProc(hWnd, msg, wParam, lParam);
