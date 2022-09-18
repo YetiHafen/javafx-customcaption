@@ -1,3 +1,6 @@
+[![](https://jitpack.io/v/YetiHafen/javafx-customcaption.svg)](https://jitpack.io/#YetiHafen/javafx-customcaption)
+
+
 # javafx-customcaption
 
 javafx-customcaption is designed to allow customizing
