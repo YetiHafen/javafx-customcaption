@@ -55,6 +55,7 @@ public class CustomizedStage {
 
         stage.getScene().rootProperty().addListener(this::onParentChange);
         stage.sceneProperty().addListener(this::onSceneChange);
+        addControlsToParent(stage.getScene().getRoot());
     }
 
     public void release() {
