@@ -1,8 +1,4 @@
 .caption .button {
-    -fx-background-color: transparent;
-
-    -fx-background-radius: 0;
-    -fx-background-insets: 0;
 
     -fx-pref-height: Infinity;
     -fx-border-radius: 0;
