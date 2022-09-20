@@ -1,6 +1,7 @@
 package net.yetihafen.javafx.customcaption;
 
 
+import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import lombok.Getter;
@@ -24,6 +25,8 @@ public class CaptionConfiguration {
     private Color closeButtonHoverColor = Color.RED;
 
     private Color iconHoverColor = Color.WHITE;
+
+    private boolean useControls = true;
 
 
     public CaptionConfiguration() {
@@ -93,5 +96,16 @@ public class CaptionConfiguration {
      */
     public void setControlBackgroundColor(Color controlBackgroundColor) {
         this.controlBackgroundColor = controlBackgroundColor;
+    }
+
+    /**
+     * choose if you want to add you want to use these libraries controls or use your own
+     * <p>
+     * Do note that {@link Scene#getRoot()} will return **not** your specified root
+     * if this is set to true (default).
+     * @param useControls if the library controls should be drawn
+     */
+    public void setUseControls(boolean useControls) {
+        this.useControls = useControls;
     }
 }

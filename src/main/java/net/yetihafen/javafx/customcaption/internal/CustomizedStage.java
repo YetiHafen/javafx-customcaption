@@ -59,7 +59,8 @@ public class CustomizedStage {
 
         stage.getScene().rootProperty().addListener(this::onParentChange);
         stage.sceneProperty().addListener(this::onSceneChange);
-        addControlsToParent(stage.getScene().getRoot());
+        if(config.isUseControls())
+            addControlsToParent(stage.getScene().getRoot());
     }
 
     public void release() {
@@ -153,7 +154,8 @@ public class CustomizedStage {
                 case WM_NCLBUTTONDOWN -> onWmNcLButtonDown(hWnd, msg, wParam, lParam);
                 case WM_NCMOUSEMOVE -> onWmNcMouseMove(hWnd, msg, wParam, lParam);
                 case WM_NCMOUSELEAVE, WM_MOUSELEAVE -> {
-                    controller.hoverButton(null);
+                    if(isRootReplaced)
+                        controller.hoverButton(null);
                     yield DefWndProc(hWnd, msg, wParam, lParam);
                 }
                 case WM_SIZE -> {
@@ -166,6 +168,9 @@ public class CustomizedStage {
         }
 
         private WinDef.LRESULT onWmNcMouseMove(WinDef.HWND hWnd, int msg, WinDef.WPARAM wParam, WinDef.LPARAM lParam) {
+            // when not using controls this is not needed
+            if(!isRootReplaced) return DefWndProc(hWnd, msg, wParam, lParam);
+
             int position = wParam.intValue();
 
             if(position == HTCLOSE || position == HTMAXBUTTON || position == HTMINBUTTON) {
@@ -219,6 +224,11 @@ public class CustomizedStage {
         }
 
         private WinDef.LRESULT onWmNcHitTest(WinDef.HWND hWnd, int msg, WinDef.WPARAM wParam, WinDef.LPARAM lParam) {
+            // if there are no controls in the client area there is no need to check
+            // however this needs to be updated once custom controls are implemented
+            if(!isRootReplaced) return DefWndProc(hWnd, msg, wParam, lParam);
+
+
             WinDef.RECT rect = new WinDef.RECT();
             User32Ex.INSTANCE.GetClientRect(hWnd, rect);
 
