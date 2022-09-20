@@ -36,6 +36,8 @@ public class CustomizedStage {
     private HBox captionControls;
     private StackPane newRoot;
     private ControlsController controller;
+    private boolean isRootReplaced;
+    private boolean isInjected;
 
     public CustomizedStage(Stage stage, CaptionConfiguration config) {
         this.stage = stage;
@@ -43,6 +45,8 @@ public class CustomizedStage {
     }
 
     public void inject() {
+        this.isInjected = true;
+
         this.hWnd = NativeUtilities.getHwnd(stage);
         this.wndProc = new WndProc();
         this.defWndProc = User32Ex.INSTANCE.SetWindowLongPtr(hWnd, WinUser.GWL_WNDPROC, wndProc);
@@ -59,8 +63,18 @@ public class CustomizedStage {
     }
 
     public void release() {
+        this.isInjected = false;
+        // release listeners
         stage.sceneProperty().removeListener(this::onSceneChange);
         stage.getScene().rootProperty().removeListener(this::onParentChange);
+
+        // remove customized caption
+        if(this.isRootReplaced) {
+            StackPane root = (StackPane) stage.getScene().getRoot();
+            Parent newParent = (Parent) root.getChildren().get(0);
+            root.getChildren().clear();
+            stage.getScene().setRoot(newParent);
+        }
 
         User32Ex.INSTANCE.SetWindowLongPtr(hWnd, WinUser.GWL_WNDPROC, defWndProc);
 
@@ -71,17 +85,20 @@ public class CustomizedStage {
     }
 
     private void onParentChange(ObservableValue<? extends Parent> observable, Parent oldVal, Parent newVal) {
+        if(!isInjected) return;
         if(newRoot == newVal) return;
         addControlsToParent(newVal);
     }
 
     private void onSceneChange(ObservableValue<? extends Scene> observable, Scene oldVal, Scene newVal) {
+        if(!isInjected) return;
         oldVal.rootProperty().removeListener(this::onParentChange);
         newVal.rootProperty().addListener(this::onParentChange);
         addControlsToParent(newVal.getRoot());
     }
 
     private void addControlsToParent(Parent parent) {
+        this.isRootReplaced = true;
         initControls();
 
         newRoot = new StackPane();

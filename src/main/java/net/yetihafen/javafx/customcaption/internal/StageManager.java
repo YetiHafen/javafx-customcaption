@@ -34,7 +34,9 @@ public class StageManager {
     }
 
     public void releaseStage(@NotNull Stage stage) {
-        customizedStages.get(stage).release();
+        CustomizedStage customizedStage = customizedStages.get(stage);
+        if(customizedStage == null) throw new IllegalArgumentException("cannot remove customization if stage was not customized");
+        customizedStage.release();
         customizedStages.remove(stage);
     }
 }

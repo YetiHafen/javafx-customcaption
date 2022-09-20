@@ -52,8 +52,10 @@ public class ControlsController implements Initializable {
             case MINIMIZE -> minimizeButton;
         } : null;
 
-        buttons.forEach(btn -> btn.setBackground(new Background(new BackgroundFill(config.getControlBackgroundColor(), null, null))));
-        buttons.forEach(btn -> btn.setTextFill(config.getIconColor()));
+        for(Button btn : buttons) {
+            btn.setTextFill(config.getIconColor());
+            btn.setBackground(new Background(new BackgroundFill(config.getControlBackgroundColor(), null, null)));
+        }
 
         if(button == null) return;
 
