@@ -52,32 +52,36 @@ public class CaptionConfiguration {
      * when hovered
      * @param iconHoverColor the color
      */
-    public void setIconHoverColor(Color iconHoverColor) {
+    public CaptionConfiguration setIconHoverColor(Color iconHoverColor) {
         this.iconHoverColor = iconHoverColor;
+        return this;
     }
 
     /**
      * set the background color of the close button when hovered
      * @param closeButtonHoverColor the color
      */
-    public void setCloseButtonHoverColor(Color closeButtonHoverColor) {
+    public CaptionConfiguration setCloseButtonHoverColor(Color closeButtonHoverColor) {
         this.closeButtonHoverColor = closeButtonHoverColor;
+        return this;
     }
 
     /**
      * set the background color of the buttons (except the close button)
      * @param buttonHoverColor the color
      */
-    public void setButtonHoverColor(Color buttonHoverColor) {
+    public CaptionConfiguration setButtonHoverColor(Color buttonHoverColor) {
         this.buttonHoverColor = buttonHoverColor;
+        return this;
     }
 
     /**
      * Set the text/foreground color of the window controls
      * @param iconColor the color
      */
-    public void setIconColor(Color iconColor) {
+    public CaptionConfiguration setIconColor(Color iconColor) {
         this.iconColor = iconColor;
+        return this;
     }
 
     /**
@@ -86,16 +90,18 @@ public class CaptionConfiguration {
      * the draggable area of the window
      * @param captionHeight the height in px
      */
-    public void setCaptionHeight(int captionHeight) {
+    public CaptionConfiguration setCaptionHeight(int captionHeight) {
         this.captionHeight = captionHeight;
+        return this;
     }
 
     /**
      * set the background color of the controls
      * @param controlBackgroundColor the color
      */
-    public void setControlBackgroundColor(Color controlBackgroundColor) {
+    public CaptionConfiguration setControlBackgroundColor(Color controlBackgroundColor) {
         this.controlBackgroundColor = controlBackgroundColor;
+        return this;
     }
 
     /**
@@ -105,7 +111,8 @@ public class CaptionConfiguration {
      * if this is set to true (default).
      * @param useControls if the library controls should be drawn
      */
-    public void setUseControls(boolean useControls) {
+    public CaptionConfiguration setUseControls(boolean useControls) {
         this.useControls = useControls;
+        return this;
     }
 }

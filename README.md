@@ -37,4 +37,19 @@ CustomCaption.useForStage(stage, new CaptionConfiguration(
         Color.BLUE, // control icons (foreground) color
         Color.AQUA, // control buttons (background) color
 ));
+
+// or alternatively
+
+CustomCaption.useForStage(stage, new CaptionConfiguration()
+        .setCaptionHeight(40)
+        .setIconColor(Color.BLUE)
+        .setControlBackgroundColor(Color.AQUA));
 ```
+<br>
+You can remove the caption entirely by setting useControls to false
+
+```java
+CustomCaption.useForStage(stage, new CaptionConfiguration()
+        .setUseControls(false));
+```
+
