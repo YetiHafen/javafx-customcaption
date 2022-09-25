@@ -10,6 +10,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import lombok.Getter;
 import net.yetihafen.javafx.customcaption.CaptionConfiguration;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,13 +21,13 @@ import java.util.ResourceBundle;
 
 public class ControlsController implements Initializable {
 
-    @FXML
+    @FXML @Getter
     private HBox root;
-    @FXML
+    @FXML @Getter
     private Button maximizeRestoreButton;
-    @FXML
+    @FXML @Getter
     private Button closeButton;
-    @FXML
+    @FXML @Getter
     private Button minimizeButton;
 
     private final List<Button> buttons = new ArrayList<>();

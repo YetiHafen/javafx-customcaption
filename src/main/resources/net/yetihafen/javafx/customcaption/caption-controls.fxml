@@ -7,8 +7,6 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="net.yetihafen.javafx.customcaption.internal.ControlsController"
       fx:id="root"
-      prefHeight="31" prefWidth="138"
-      minHeight="31" minWidth="138"
       alignment="CENTER_RIGHT"
       styleClass="caption">
     <Button mnemonicParsing="false" text="&#xE921;" fx:id="minimizeButton"/>

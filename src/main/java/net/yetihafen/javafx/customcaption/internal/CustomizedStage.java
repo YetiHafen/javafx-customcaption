@@ -6,11 +6,15 @@ import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.robot.Robot;
 import javafx.stage.Stage;
 import lombok.Getter;
 import net.yetihafen.javafx.customcaption.CaptionConfiguration;
@@ -38,6 +42,11 @@ public class CustomizedStage {
     private ControlsController controller;
     private boolean isRootReplaced;
     private boolean isInjected;
+
+    private Node closeButton;
+    private Node restoreButton;
+    private Node minimizeButton;
+    private Node caption;
 
     public CustomizedStage(Stage stage, CaptionConfiguration config) {
         this.stage = stage;
@@ -118,6 +127,10 @@ public class CustomizedStage {
             controller = loader.getController();
             captionControls.getStylesheets().add(getClass().getResource("/net/yetihafen/javafx/customcaption/caption-controls.css").toExternalForm());
             controller.applyConfig(config);
+            caption = controller.getRoot();
+            minimizeButton = controller.getMinimizeButton();
+            restoreButton = controller.getMaximizeRestoreButton();
+            closeButton = controller.getCloseButton();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -143,8 +156,6 @@ public class CustomizedStage {
         private static final int TME_LEAVE = 0x00000002;
         private static final int TME_NONCLIENT = 0x00000010;
         private static final int HOVER_DEFAULT = 0xFFFFFFFF;
-
-        static final int BUTTON_WIDTH = 46;
 
         @Override
         public WinDef.LRESULT callback(WinDef.HWND hWnd, int msg, WinDef.WPARAM wParam, WinDef.LPARAM lParam) {
@@ -228,35 +239,35 @@ public class CustomizedStage {
             // however this needs to be updated once custom controls are implemented
             if(!isRootReplaced) return DefWndProc(hWnd, msg, wParam, lParam);
 
-
             WinDef.RECT rect = new WinDef.RECT();
             User32Ex.INSTANCE.GetClientRect(hWnd, rect);
 
-            int x = GET_X_LPARAM(lParam);
-            int y = GET_Y_LPARAM(lParam);
+            int screenX = GET_X_LPARAM(lParam);
+            int screenY = GET_Y_LPARAM(lParam);
 
-            WinDef.POINT point = new WinDef.POINT(x, y);
+            WinDef.POINT point = new WinDef.POINT(screenX, screenY);
             User32Ex.INSTANCE.ScreenToClient(hWnd, point);
 
-            x = point.x;
-            y = point.y;
-
-            int width = rect.right - rect.left;
-
             WinDef.LRESULT res = DefWndProc(hWnd, msg, wParam, lParam);
-
             if(res.longValue() != HTCLIENT) return res;
 
-            if(y <= 1) return new WinDef.LRESULT(HTTOP);
+            if(point.y <= 3) return new WinDef.LRESULT(HTTOP);
 
-            if(y <= config.getCaptionHeight()) {
+            Bounds captionBounds = caption.localToScreen(caption.getBoundsInLocal());
+            Point2D mousePosScreen = new Robot().getMousePosition();
 
-                int distantRight = width - x;
-                if(distantRight < BUTTON_WIDTH) {
+
+            if(captionBounds.contains(mousePosScreen)) {
+                Bounds closeButtonBounds = closeButton.localToScreen(closeButton.getBoundsInLocal());
+                Bounds restoreButtonBounds = restoreButton.localToScreen(restoreButton.getBoundsInLocal());
+                Bounds minimizeButtonBounds = minimizeButton.localToScreen(minimizeButton.getBoundsInLocal());
+
+
+                if(closeButtonBounds.contains(mousePosScreen)) {
                     return new WinDef.LRESULT(HTCLOSE);
-                } else if(distantRight < BUTTON_WIDTH * 2) {
+                } else if(restoreButtonBounds.contains(mousePosScreen)) {
                     return new WinDef.LRESULT(HTMAXBUTTON);
-                } else if(distantRight < BUTTON_WIDTH * 3) {
+                } else if(minimizeButtonBounds.contains(mousePosScreen)) {
                     return new WinDef.LRESULT(HTMINBUTTON);
                 } else
                     return new WinDef.LRESULT(HTCAPTION);
