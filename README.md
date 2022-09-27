@@ -1,4 +1,5 @@
 [![](https://jitpack.io/v/YetiHafen/javafx-customcaption.svg)](https://jitpack.io/#YetiHafen/javafx-customcaption)
+![Netlify Status](https://api.netlify.com/api/v1/badges/d69af318-eea7-473c-b038-89ba5fa48dd6/deploy-status)
 
 
 # javafx-customcaption
