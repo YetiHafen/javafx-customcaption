@@ -10,6 +10,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import lombok.Getter;
 import net.yetihafen.javafx.customcaption.CaptionConfiguration;
 import org.jetbrains.annotations.Nullable;
@@ -78,6 +79,15 @@ public class ControlsController implements Initializable {
         buttons.add(maximizeRestoreButton);
         buttons.add(closeButton);
         buttons.add(minimizeButton);
+
+        String family = "Segoe Fluent Icons";
+        Font font = Font.font(family, 10);
+        if(!font.getFamily().equals(family))
+            font = Font.font("Segoe MDL2 Assets", 10);
+
+        for(Button b : buttons) {
+            b.setFont(font);
+        }
     }
 
     public enum CaptionButton {
