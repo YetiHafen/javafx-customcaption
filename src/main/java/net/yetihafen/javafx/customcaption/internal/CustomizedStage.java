@@ -136,6 +136,29 @@ public class CustomizedStage {
         }
     }
 
+    private Bounds getCloseBtnLocation() {
+        return closeButton.localToScreen(closeButton.getBoundsInLocal());
+    }
+
+    private Bounds getMaximizeBtnLocation() {
+        return restoreButton.localToScreen(restoreButton.getBoundsInLocal());
+    }
+
+    private Bounds getMinimizeBtnLocation() {
+        return minimizeButton.localToScreen(minimizeButton.getBoundsInLocal());
+    }
+
+    private Bounds getCaptionBounds() {
+        Node region = null;
+        if(config.getAdvancedConfig() != null)
+            region = config.getAdvancedConfig().getCaptionDragRegion();
+
+        if(region == null)
+            region = caption;
+
+        return region.localToScreen(region.getBoundsInLocal());
+    }
+
 
     class WndProc implements WinUser.WindowProc {
 
@@ -251,28 +274,27 @@ public class CustomizedStage {
             WinDef.LRESULT res = DefWndProc(hWnd, msg, wParam, lParam);
             if(res.longValue() != HTCLIENT) return res;
 
-            if(point.y <= 3) return new WinDef.LRESULT(HTTOP);
+            if(!NativeUtilities.isMaximized(hWnd))
+                if(point.y <= 3) return new WinDef.LRESULT(HTTOP);
 
-            Bounds captionBounds = caption.localToScreen(caption.getBoundsInLocal());
+            Bounds captionBounds = getCaptionBounds();
             Point2D mousePosScreen = new Robot().getMousePosition();
 
+            Bounds closeButtonBounds = getCloseBtnLocation();
+            Bounds maximizeButtonBounds = getMaximizeBtnLocation();
+            Bounds minimizeButtonBounds = getMinimizeBtnLocation();
 
-            if(captionBounds.contains(mousePosScreen)) {
-                Bounds closeButtonBounds = closeButton.localToScreen(closeButton.getBoundsInLocal());
-                Bounds restoreButtonBounds = restoreButton.localToScreen(restoreButton.getBoundsInLocal());
-                Bounds minimizeButtonBounds = minimizeButton.localToScreen(minimizeButton.getBoundsInLocal());
-
-
-                if(closeButtonBounds.contains(mousePosScreen)) {
-                    return new WinDef.LRESULT(HTCLOSE);
-                } else if(restoreButtonBounds.contains(mousePosScreen)) {
-                    return new WinDef.LRESULT(HTMAXBUTTON);
-                } else if(minimizeButtonBounds.contains(mousePosScreen)) {
-                    return new WinDef.LRESULT(HTMINBUTTON);
-                } else
-                    return new WinDef.LRESULT(HTCAPTION);
-            } else
+            if(closeButtonBounds.contains(mousePosScreen)) {
+                return new WinDef.LRESULT(HTCLOSE);
+            } else if(maximizeButtonBounds.contains(mousePosScreen)) {
+                return new WinDef.LRESULT(HTMAXBUTTON);
+            } else if(minimizeButtonBounds.contains(mousePosScreen)) {
+                return new WinDef.LRESULT(HTMINBUTTON);
+            } else if(captionBounds.contains(mousePosScreen)) {
+                return new WinDef.LRESULT(HTCAPTION);
+            } else {
                 return new WinDef.LRESULT(HTCLIENT);
+            }
         }
 
         private WinDef.LRESULT onWmNcCalcSize(WinDef.HWND hWnd, int msg, WinDef.WPARAM wParam, WinDef.LPARAM lParam) {

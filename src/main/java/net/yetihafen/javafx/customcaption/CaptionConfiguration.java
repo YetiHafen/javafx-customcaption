@@ -28,6 +28,8 @@ public class CaptionConfiguration {
 
     private boolean useControls = true;
 
+    private AdvancedCaptionConfiguration advancedConfig;
+
 
     public CaptionConfiguration() {
         this(31);
@@ -111,8 +113,18 @@ public class CaptionConfiguration {
      * if this is set to true (default).
      * @param useControls if the library controls should be drawn
      */
-    public CaptionConfiguration setUseControls(boolean useControls) {
+    public CaptionConfiguration useControls(boolean useControls) {
         this.useControls = useControls;
+        return this;
+    }
+
+    /**
+     * specify advanced configuration for more complex
+     * caption customization
+     * @param advancedConfig the configuration
+     */
+    public CaptionConfiguration setAdvancedConfig(AdvancedCaptionConfiguration advancedConfig) {
+        this.advancedConfig = advancedConfig;
         return this;
     }
 }
