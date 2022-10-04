@@ -18,6 +18,7 @@ import javafx.scene.robot.Robot;
 import javafx.stage.Stage;
 import lombok.Getter;
 import net.yetihafen.javafx.customcaption.CaptionConfiguration;
+import net.yetihafen.javafx.customcaption.DragRegion;
 import net.yetihafen.javafx.customcaption.internal.libraries.User32Ex;
 import net.yetihafen.javafx.customcaption.internal.structs.NCCALCSIZE_PARAMS;
 import net.yetihafen.javafx.customcaption.internal.structs.TRACKMOUSEEVENT;
@@ -46,7 +47,6 @@ public class CustomizedStage {
     private Node closeButton;
     private Node restoreButton;
     private Node minimizeButton;
-    private Node caption;
 
     public CustomizedStage(Stage stage, CaptionConfiguration config) {
         this.stage = stage;
@@ -127,7 +127,6 @@ public class CustomizedStage {
             controller = loader.getController();
             captionControls.getStylesheets().add(getClass().getResource("/net/yetihafen/javafx/customcaption/caption-controls.css").toExternalForm());
             controller.applyConfig(config);
-            caption = controller.getRoot();
             minimizeButton = controller.getMinimizeButton();
             restoreButton = controller.getMaximizeRestoreButton();
             closeButton = controller.getCloseButton();
@@ -146,17 +145,6 @@ public class CustomizedStage {
 
     private Bounds getMinimizeBtnLocation() {
         return minimizeButton.localToScreen(minimizeButton.getBoundsInLocal());
-    }
-
-    private Bounds getCaptionBounds() {
-        Node region = null;
-        if(config.getAdvancedConfig() != null)
-            region = config.getAdvancedConfig().getCaptionDragRegion();
-
-        if(region == null)
-            region = caption;
-
-        return region.localToScreen(region.getBoundsInLocal());
     }
 
 
@@ -277,7 +265,7 @@ public class CustomizedStage {
             if(!NativeUtilities.isMaximized(hWnd))
                 if(point.y <= 3) return new WinDef.LRESULT(HTTOP);
 
-            Bounds captionBounds = getCaptionBounds();
+            DragRegion captionBounds = config.getCaptionDragRegion();
             Point2D mousePosScreen = new Robot().getMousePosition();
 
             Bounds closeButtonBounds = getCloseBtnLocation();

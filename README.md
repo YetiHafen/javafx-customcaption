@@ -51,6 +51,6 @@ You can remove the caption entirely by setting useControls to false
 
 ```java
 CustomCaption.useForStage(stage, new CaptionConfiguration()
-        .setUseControls(false));
+        .useControls(false));
 ```
 

@@ -1,6 +1,7 @@
 package net.yetihafen.javafx.customcaption;
 
 
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -28,7 +29,7 @@ public class CaptionConfiguration {
 
     private boolean useControls = true;
 
-    private AdvancedCaptionConfiguration advancedConfig;
+    private DragRegion captionDragRegion;
 
 
     public CaptionConfiguration() {
@@ -119,12 +120,21 @@ public class CaptionConfiguration {
     }
 
     /**
-     * specify advanced configuration for more complex
-     * caption customization
-     * @param advancedConfig the configuration
+     * Specify the {@link Node} defining the draggable area
+     * @param captionDragRegion the {@link Node}
      */
-    public CaptionConfiguration setAdvancedConfig(AdvancedCaptionConfiguration advancedConfig) {
-        this.advancedConfig = advancedConfig;
+    public CaptionConfiguration setCaptionDragRegion(Node captionDragRegion) {
+        this.captionDragRegion = new DragRegion(captionDragRegion);
+        return this;
+    }
+
+    /**
+     * Specify a {@link DragRegion} to define where the window should be
+     * draggable
+     * @param captionDragRegion the {@link DragRegion}
+     */
+    public CaptionConfiguration setCaptionDragRegion(DragRegion captionDragRegion) {
+        this.captionDragRegion = captionDragRegion;
         return this;
     }
 }
