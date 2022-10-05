@@ -278,11 +278,16 @@ public class CustomizedStage {
                 return new WinDef.LRESULT(HTMAXBUTTON);
             } else if(minimizeButtonBounds.contains(mousePosScreen)) {
                 return new WinDef.LRESULT(HTMINBUTTON);
-            } else if(captionBounds.contains(mousePosScreen)) {
-                return new WinDef.LRESULT(HTCAPTION);
-            } else {
-                return new WinDef.LRESULT(HTCLIENT);
             }
+
+            if(captionBounds != null) {
+                if (captionBounds.contains(mousePosScreen))
+                    return new WinDef.LRESULT(HTCAPTION);
+            } else {
+                if(point.y < config.getCaptionHeight())
+                    return new LRESULT(HTCAPTION);
+            }
+            return new WinDef.LRESULT(HTCLIENT);
         }
 
         private WinDef.LRESULT onWmNcCalcSize(WinDef.HWND hWnd, int msg, WinDef.WPARAM wParam, WinDef.LPARAM lParam) {
