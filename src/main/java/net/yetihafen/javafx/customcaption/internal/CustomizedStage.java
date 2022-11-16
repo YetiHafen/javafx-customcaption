@@ -168,6 +168,8 @@ public class CustomizedStage {
         private static final int TME_NONCLIENT = 0x00000010;
         private static final int HOVER_DEFAULT = 0xFFFFFFFF;
 
+        private CaptionButton acitveButton;
+
         @Override
         public WinDef.LRESULT callback(WinDef.HWND hWnd, int msg, WinDef.WPARAM wParam, WinDef.LPARAM lParam) {
             return switch (msg) {
@@ -195,33 +197,29 @@ public class CustomizedStage {
 
             int position = wParam.intValue();
 
-            if(position == HTCLOSE || position == HTMAXBUTTON || position == HTMINBUTTON) {
+            CaptionButton newButton = switch (position) {
+                case HTCLOSE -> CaptionButton.CLOSE;
+                case HTMAXBUTTON -> CaptionButton.MAXIMIZE_RESTORE;
+                case HTMINBUTTON -> CaptionButton.MINIMIZE;
+                default -> null;
+            };
+
+            // continue only if a different button was hovered
+            if(newButton == acitveButton) return new LRESULT(0);
+            acitveButton = newButton;
+
+            controller.hoverButton(acitveButton);
+
+            if(acitveButton != null) {
                 TRACKMOUSEEVENT ev = new TRACKMOUSEEVENT();
                 ev.cbSize = new WinDef.DWORD(ev.size());
                 ev.dwFlags = new WinDef.DWORD(TME_LEAVE | TME_NONCLIENT);
                 ev.hwndTrack = hWnd;
                 ev.dwHoverTime = new WinDef.DWORD(HOVER_DEFAULT);
                 User32Ex.INSTANCE.TrackMouseEvent(ev);
+                return new LRESULT(0);
             }
-
-            return switch(position) {
-                case HTCLOSE -> {
-                    controller.hoverButton(ControlsController.CaptionButton.CLOSE);
-                    yield new WinDef.LRESULT(0);
-                }
-                case HTMAXBUTTON -> {
-                    controller.hoverButton(ControlsController.CaptionButton.MAXIMIZE_RESTORE);
-                    yield new WinDef.LRESULT(0);
-                }
-                case HTMINBUTTON -> {
-                    controller.hoverButton(ControlsController.CaptionButton.MINIMIZE);
-                    yield new WinDef.LRESULT(0);
-                }
-                default -> {
-                    controller.hoverButton(null);
-                    yield DefWndProc(hWnd, msg, wParam, lParam);
-                }
-            };
+            return DefWndProc(hWnd, msg, wParam, lParam);
         }
 
         private WinDef.LRESULT onWmNcLButtonDown(WinDef.HWND hWnd, int msg, WinDef.WPARAM wParam, WinDef.LPARAM lParam) {
@@ -328,5 +326,9 @@ public class CustomizedStage {
         private int GET_Y_LPARAM(BaseTSD.LONG_PTR lParam) {
             return (short) HIWORD(lParam);
         }
+    }
+
+    public enum CaptionButton {
+        CLOSE, MINIMIZE, MAXIMIZE_RESTORE
     }
 }

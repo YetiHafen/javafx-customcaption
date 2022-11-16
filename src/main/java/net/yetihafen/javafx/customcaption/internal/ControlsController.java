@@ -47,7 +47,7 @@ public class ControlsController implements Initializable {
     }
 
 
-    public void hoverButton(@Nullable CaptionButton hoveredButton) {
+    public void hoverButton(@Nullable CustomizedStage.CaptionButton hoveredButton) {
         Button button = hoveredButton != null ? switch (hoveredButton) {
             case CLOSE -> closeButton;
             case MAXIMIZE_RESTORE -> maximizeRestoreButton;
@@ -61,7 +61,7 @@ public class ControlsController implements Initializable {
 
         if(button == null) return;
 
-        Color bgColor = hoveredButton == CaptionButton.CLOSE ? config.getCloseButtonHoverColor() : config.getButtonHoverColor();
+        Color bgColor = hoveredButton == CustomizedStage.CaptionButton.CLOSE ? config.getCloseButtonHoverColor() : config.getButtonHoverColor();
 
         button.setBackground(new Background(new BackgroundFill(bgColor, CornerRadii.EMPTY, Insets.EMPTY)));
         button.setTextFill(config.getIconHoverColor());
@@ -88,9 +88,5 @@ public class ControlsController implements Initializable {
         for(Button b : buttons) {
             b.setFont(font);
         }
-    }
-
-    public enum CaptionButton {
-        CLOSE, MINIMIZE, MAXIMIZE_RESTORE
     }
 }
