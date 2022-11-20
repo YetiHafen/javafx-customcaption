@@ -1,5 +1,4 @@
 [![](https://jitpack.io/v/YetiHafen/javafx-customcaption.svg)](https://jitpack.io/#YetiHafen/javafx-customcaption)
-![Netlify Status](https://api.netlify.com/api/v1/badges/d69af318-eea7-473c-b038-89ba5fa48dd6/deploy-status)
 
 
 # javafx-customcaption
@@ -36,7 +35,7 @@ specifying additional information about the controls that will be drawn.
 CustomCaption.useForStage(stage, new CaptionConfiguration(
         40, // caption height
         Color.BLUE, // control icons (foreground) color
-        Color.AQUA, // control buttons (background) color
+        Color.AQUA // control buttons (background) color
 ));
 
 // or alternatively
@@ -49,8 +48,47 @@ CustomCaption.useForStage(stage, new CaptionConfiguration()
 <br>
 You can remove the caption entirely by setting useControls to false
 
+Note that you should define your own drag region if you're using this, otherwise
+your window will not be draggable 
+
 ```java
 CustomCaption.useForStage(stage, new CaptionConfiguration()
-        .useControls(false));
+        .useControls(false)
+        .setCaptionDragRegion(dragRegion));
 ```
 
+## Get this library:
+[![](https://jitpack.io/v/YetiHafen/javafx-customcaption.svg)](https://jitpack.io/#YetiHafen/javafx-customcaption)
+
+This library is currently available on JitPack include it as a dependency for your project like this:
+
+(replace "TAG" with the current version shown above or visit jitpack for more information)
+
+maven:
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+```
+```xml
+<dependency>
+    <groupId>com.github.YetiHafen</groupId>
+    <artifactId>javafx-customcaption</artifactId>
+    <version>TAG</version>
+</dependency>
+```
+
+gradle:
+```groovy
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+```
+```groovy
+dependencies {
+    implementation 'com.github.YetiHafen:javafx-customcaption:TAG'
+}
+```
