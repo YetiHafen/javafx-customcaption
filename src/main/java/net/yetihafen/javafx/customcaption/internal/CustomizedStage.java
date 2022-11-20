@@ -244,9 +244,6 @@ public class CustomizedStage {
         }
 
         private WinDef.LRESULT onWmNcHitTest(WinDef.HWND hWnd, int msg, WinDef.WPARAM wParam, WinDef.LPARAM lParam) {
-            // if there are no controls in the client area there is no need to check
-            // however this needs to be updated once custom controls are implemented
-            if(!isRootReplaced) return DefWndProc(hWnd, msg, wParam, lParam);
 
             WinDef.RECT rect = new WinDef.RECT();
             User32Ex.INSTANCE.GetClientRect(hWnd, rect);
@@ -266,6 +263,18 @@ public class CustomizedStage {
             DragRegion captionBounds = config.getCaptionDragRegion();
             Point2D mousePosScreen = new Robot().getMousePosition();
 
+
+            if(captionBounds != null) {
+                if (captionBounds.contains(mousePosScreen))
+                    return new WinDef.LRESULT(HTCAPTION);
+            } else {
+                if(point.y < config.getCaptionHeight())
+                    return new LRESULT(HTCAPTION);
+            }
+
+            // if there are no controls in the client area there is no need to check if they are hovered
+            if(!isRootReplaced) return DefWndProc(hWnd, msg, wParam, lParam);
+
             Bounds closeButtonBounds = getCloseBtnLocation();
             Bounds maximizeButtonBounds = getMaximizeBtnLocation();
             Bounds minimizeButtonBounds = getMinimizeBtnLocation();
@@ -276,14 +285,6 @@ public class CustomizedStage {
                 return new WinDef.LRESULT(HTMAXBUTTON);
             } else if(minimizeButtonBounds.contains(mousePosScreen)) {
                 return new WinDef.LRESULT(HTMINBUTTON);
-            }
-
-            if(captionBounds != null) {
-                if (captionBounds.contains(mousePosScreen))
-                    return new WinDef.LRESULT(HTCAPTION);
-            } else {
-                if(point.y < config.getCaptionHeight())
-                    return new LRESULT(HTCAPTION);
             }
             return new WinDef.LRESULT(HTCLIENT);
         }
