@@ -263,6 +263,15 @@ public class CustomizedStage {
             DragRegion captionBounds = config.getCaptionDragRegion();
             Point2D mousePosScreen = new Robot().getMousePosition();
 
+
+            if(captionBounds != null) {
+                if (captionBounds.contains(mousePosScreen))
+                    return new WinDef.LRESULT(HTCAPTION);
+            } else {
+                if(point.y < config.getCaptionHeight())
+                    return new LRESULT(HTCAPTION);
+            }
+
             // if there are no controls in the client area there is no need to check if they are hovered
             if(!isRootReplaced) return DefWndProc(hWnd, msg, wParam, lParam);
 
@@ -277,15 +286,6 @@ public class CustomizedStage {
             } else if(minimizeButtonBounds.contains(mousePosScreen)) {
                 return new WinDef.LRESULT(HTMINBUTTON);
             }
-
-            if(captionBounds != null) {
-                if (captionBounds.contains(mousePosScreen))
-                    return new WinDef.LRESULT(HTCAPTION);
-            } else {
-                if(point.y < config.getCaptionHeight())
-                    return new LRESULT(HTCAPTION);
-            }
-
             return new WinDef.LRESULT(HTCLIENT);
         }
 
