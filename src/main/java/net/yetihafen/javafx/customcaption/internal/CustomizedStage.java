@@ -245,6 +245,7 @@ public class CustomizedStage {
 
         private WinDef.LRESULT onWmNcHitTest(WinDef.HWND hWnd, int msg, WinDef.WPARAM wParam, WinDef.LPARAM lParam) {
 
+            // handle border interactions
             WinDef.RECT rect = new WinDef.RECT();
             User32Ex.INSTANCE.GetClientRect(hWnd, rect);
 
@@ -264,28 +265,33 @@ public class CustomizedStage {
             Point2D mousePosScreen = new Robot().getMousePosition();
 
 
+            if(isRootReplaced) {
+                // handle control buttons if controls are used
+                Bounds closeButtonBounds = getCloseBtnLocation();
+                Bounds maximizeButtonBounds = getMaximizeBtnLocation();
+                Bounds minimizeButtonBounds = getMinimizeBtnLocation();
+
+                if(closeButtonBounds.contains(mousePosScreen)) {
+                    return new WinDef.LRESULT(HTCLOSE);
+                } else if(maximizeButtonBounds.contains(mousePosScreen)) {
+                    return new WinDef.LRESULT(HTMAXBUTTON);
+                } else if(minimizeButtonBounds.contains(mousePosScreen)) {
+                    return new WinDef.LRESULT(HTMINBUTTON);
+                }
+            }
+
+            // handle caption interaction
             if(captionBounds != null) {
+                // custom caption was specified so use it
                 if (captionBounds.contains(mousePosScreen))
                     return new WinDef.LRESULT(HTCAPTION);
-            } else {
+            } else if(isRootReplaced) {
+                // only apply this default caption if custom controls are used
                 if(point.y < config.getCaptionHeight())
                     return new LRESULT(HTCAPTION);
             }
 
-            // if there are no controls in the client area there is no need to check if they are hovered
-            if(!isRootReplaced) return DefWndProc(hWnd, msg, wParam, lParam);
-
-            Bounds closeButtonBounds = getCloseBtnLocation();
-            Bounds maximizeButtonBounds = getMaximizeBtnLocation();
-            Bounds minimizeButtonBounds = getMinimizeBtnLocation();
-
-            if(closeButtonBounds.contains(mousePosScreen)) {
-                return new WinDef.LRESULT(HTCLOSE);
-            } else if(maximizeButtonBounds.contains(mousePosScreen)) {
-                return new WinDef.LRESULT(HTMAXBUTTON);
-            } else if(minimizeButtonBounds.contains(mousePosScreen)) {
-                return new WinDef.LRESULT(HTMINBUTTON);
-            }
+            // no customized position detected -> in client area
             return new WinDef.LRESULT(HTCLIENT);
         }
 
