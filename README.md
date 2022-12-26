@@ -109,7 +109,7 @@ public class HelloApplication extends Application {
 ````
 
 #### Here is a small demo of the final program:
-![](https://yetihafen.net/example.gif)
+![example](https://user-images.githubusercontent.com/78693157/209582570-bd6a6df0-bfc8-41d4-83a2-795d0db923ef.gif)
 
 
 ## Get this library:
