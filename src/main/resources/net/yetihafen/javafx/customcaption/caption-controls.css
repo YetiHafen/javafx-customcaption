@@ -12,5 +12,5 @@
 .caption {
     -fx-min-height: 31px;
     -fx-pref-height: 31px;
-    -fx-pref-width: Infinity;
+    -fx-max-width: 138px;
 }
