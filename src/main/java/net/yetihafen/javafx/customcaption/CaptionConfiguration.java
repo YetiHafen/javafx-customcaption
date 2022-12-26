@@ -3,6 +3,8 @@ package net.yetihafen.javafx.customcaption;
 
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.MenuBar;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import lombok.Getter;
@@ -135,6 +137,23 @@ public class CaptionConfiguration {
      */
     public CaptionConfiguration setCaptionDragRegion(DragRegion captionDragRegion) {
         this.captionDragRegion = captionDragRegion;
+        return this;
+    }
+
+    /**
+     * Specify a {@link MenuBar} to define where the window should be draggable
+     * while excluding the buttons in the MenuBar
+     * @param menuBar the {@link MenuBar}
+     */
+    public CaptionConfiguration setCaptionDragRegion(MenuBar menuBar) {
+        // create new DragRegion with MenuBar
+        DragRegion region = new DragRegion(menuBar);
+        // exclude all elements in MenuBar from DragRegion
+        HBox box = (HBox) menuBar.getChildrenUnmodifiable().get(0);
+        for(Node node : box.getChildrenUnmodifiable()) {
+            region.addExcludeBounds(node);
+        }
+        this.captionDragRegion = region;
         return this;
     }
 }
