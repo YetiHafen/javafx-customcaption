@@ -178,8 +178,10 @@ public class CustomizedStage {
                 case WM_NCLBUTTONDOWN -> onWmNcLButtonDown(hWnd, msg, wParam, lParam);
                 case WM_NCMOUSEMOVE -> onWmNcMouseMove(hWnd, msg, wParam, lParam);
                 case WM_NCMOUSELEAVE, WM_MOUSELEAVE -> {
-                    if(isRootReplaced)
+                    if(isRootReplaced) {
                         controller.hoverButton(null);
+                        acitveButton = null;
+                    }
                     yield DefWndProc(hWnd, msg, wParam, lParam);
                 }
                 case WM_SIZE -> {
