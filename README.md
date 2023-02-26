@@ -6,8 +6,17 @@
 javafx-customcaption is designed to allow customizing
 the native window caption on Microsoft Windows
 
+## Simple Usage:
+If you just want to change the color of your window caption you can
+use the
+[setImmersiveDarkMode](https://jfxccdocs.yetihafen.net/net.yetihafen.javafx.customcaption/net/yetihafen/javafx/customcaption/customcaption#setImmersiveDarkMode(javafx.stage.Stage,boolean))
+or
+[setCaptionColor](https://jfxccdocs.yetihafen.net/net.yetihafen.javafx.customcaption/net/yetihafen/javafx/customcaption/customcaption#setCaptionColor(javafx.stage.Stage,javafx.scene.paint.Color))
+methods to change the color for your specific stage.
+Keep in mind that those methods are only available on newer versions of Windows and might not work on every system.
+(setCaptionColor only works on Windows 11)
 
-## Usage:
+## Advanced Usage:
 You can use the following code to remove the default caption while re-adding
 native looking window controls
 ```java
