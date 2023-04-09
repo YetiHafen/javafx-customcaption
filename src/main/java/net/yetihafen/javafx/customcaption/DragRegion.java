@@ -4,10 +4,11 @@ package net.yetihafen.javafx.customcaption;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import net.yetihafen.javafx.customcaption.internal.ShowInitializable;
 
 import java.util.ArrayList;
 
-public class DragRegion {
+public class DragRegion implements ShowInitializable {
 
     private final ArrayList<Node> excludedBounds = new ArrayList<>();
     private final Node base;
@@ -59,5 +60,13 @@ public class DragRegion {
     public DragRegion addExcludeBounds(Node node) {
         excludedBounds.add(node);
         return this;
+    }
+
+    public Node getBase() {
+        return base;
+    }
+
+    @Override
+    public void showInit() {
     }
 }

@@ -28,7 +28,7 @@ import java.io.IOException;
 import static com.sun.jna.platform.win32.WinUser.*;
 
 
-public class CustomizedStage {
+public class CustomizedStage implements ShowInitializable {
 
     @Getter
     private final Stage stage;
@@ -51,6 +51,14 @@ public class CustomizedStage {
     public CustomizedStage(Stage stage, CaptionConfiguration config) {
         this.stage = stage;
         this.config = config;
+    }
+
+    @Override
+    public void showInit() {
+        // modify stage
+        inject();
+        // forward message to dragregion
+        config.getCaptionDragRegion().showInit();
     }
 
     public void inject() {

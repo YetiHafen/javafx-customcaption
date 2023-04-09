@@ -8,6 +8,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import lombok.Getter;
+import net.yetihafen.javafx.customcaption.internal.MenuBarDragRegion;
 
 @Getter
 public class CaptionConfiguration {
@@ -146,14 +147,7 @@ public class CaptionConfiguration {
      * @param menuBar the {@link MenuBar}
      */
     public CaptionConfiguration setCaptionDragRegion(MenuBar menuBar) {
-        // create new DragRegion with MenuBar
-        DragRegion region = new DragRegion(menuBar);
-        // exclude all elements in MenuBar from DragRegion
-        HBox box = (HBox) menuBar.getChildrenUnmodifiable().get(0);
-        for(Node node : box.getChildrenUnmodifiable()) {
-            region.addExcludeBounds(node);
-        }
-        this.captionDragRegion = region;
+        this.captionDragRegion = new MenuBarDragRegion(menuBar);
         return this;
     }
 }

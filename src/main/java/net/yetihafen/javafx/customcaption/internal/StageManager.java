@@ -22,7 +22,7 @@ public class StageManager {
             stage.showingProperty().addListener(new ChangeListener<>() {
                 @Override
                 public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                    customStage.inject();
+                    customStage.showInit();
                     stage.showingProperty().removeListener(this);
                 }
             });
