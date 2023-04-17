@@ -4,14 +4,14 @@ package net.yetihafen.javafx.customcaption;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuBar;
-import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import lombok.Getter;
 import net.yetihafen.javafx.customcaption.internal.MenuBarDragRegion;
+import net.yetihafen.javafx.customcaption.internal.ShowInitializable;
 
 @Getter
-public class CaptionConfiguration {
+public class CaptionConfiguration implements ShowInitializable {
 
     /**
      * The default config that is used when no parameter is passed
@@ -149,5 +149,11 @@ public class CaptionConfiguration {
     public CaptionConfiguration setCaptionDragRegion(MenuBar menuBar) {
         this.captionDragRegion = new MenuBarDragRegion(menuBar);
         return this;
+    }
+
+    @Override
+    public void showInit() {
+        if(captionDragRegion != null)
+            captionDragRegion.showInit();
     }
 }

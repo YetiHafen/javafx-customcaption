@@ -4,6 +4,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.BaseTSD;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
+import javafx.beans.Observable;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
@@ -28,7 +29,7 @@ import java.io.IOException;
 import static com.sun.jna.platform.win32.WinUser.*;
 
 
-public class CustomizedStage implements ShowInitializable {
+public class CustomizedStage {
 
     @Getter
     private final Stage stage;
@@ -51,14 +52,29 @@ public class CustomizedStage implements ShowInitializable {
     public CustomizedStage(Stage stage, CaptionConfiguration config) {
         this.stage = stage;
         this.config = config;
+        stage.showingProperty().addListener(this::onShowUpdate);
+
+        if(stage.isShowing())
+            inject();
     }
 
-    @Override
-    public void showInit() {
-        // modify stage
-        inject();
-        // forward message to dragregion
-        config.getCaptionDragRegion().showInit();
+    private void onShowUpdate(Observable observable, boolean oldVal, boolean newVal) {
+        // stage was shown for the first time
+        if(newVal && !this.isInjected) {
+            inject();
+            config.showInit();
+        }
+
+        HWND updatedHwnd = NativeUtilities.getHwnd(stage);
+
+        if(updatedHwnd != null)
+            this.hWnd = updatedHwnd;
+
+
+        if(newVal) {
+            User32Ex.INSTANCE.SetWindowLongPtr(hWnd, GWL_WNDPROC, wndProc);
+            refreshStageBounds();
+        }
     }
 
     public void inject() {
@@ -68,11 +84,7 @@ public class CustomizedStage implements ShowInitializable {
         this.wndProc = new WndProc();
         this.defWndProc = User32Ex.INSTANCE.SetWindowLongPtr(hWnd, WinUser.GWL_WNDPROC, wndProc);
 
-        // trigger new WM_NCCALCSIZE message
-        WinDef.RECT rect = new WinDef.RECT();
-        User32Ex.INSTANCE.GetWindowRect(hWnd, rect);
-        User32Ex.INSTANCE.SetWindowPos(hWnd, null, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, WinUser.SWP_FRAMECHANGED);
-
+        refreshStageBounds();
 
         stage.getScene().rootProperty().addListener(this::onParentChange);
         stage.sceneProperty().addListener(this::onSceneChange);
@@ -96,7 +108,13 @@ public class CustomizedStage implements ShowInitializable {
 
         User32Ex.INSTANCE.SetWindowLongPtr(hWnd, WinUser.GWL_WNDPROC, defWndProc);
 
-        // trigger new WM_NCCALCSIZE message
+        refreshStageBounds();
+    }
+
+    /**
+     * triggers new WM_NCCALCSIZE message
+     */
+    public void refreshStageBounds() {
         WinDef.RECT rect = new WinDef.RECT();
         User32Ex.INSTANCE.GetWindowRect(hWnd, rect);
         User32Ex.INSTANCE.SetWindowPos(hWnd, null, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, WinUser.SWP_FRAMECHANGED);

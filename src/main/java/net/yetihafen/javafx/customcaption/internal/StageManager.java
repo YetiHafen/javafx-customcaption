@@ -1,7 +1,5 @@
 package net.yetihafen.javafx.customcaption.internal;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.stage.Stage;
 import net.yetihafen.javafx.customcaption.CaptionConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -17,19 +15,6 @@ public class StageManager {
 
         CustomizedStage customStage = new CustomizedStage(stage, config);
 
-        if(!stage.isShowing()) {
-
-            stage.showingProperty().addListener(new ChangeListener<>() {
-                @Override
-                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                    customStage.showInit();
-                    stage.showingProperty().removeListener(this);
-                }
-            });
-
-        } else {
-            customStage.inject();
-        }
         customizedStages.put(stage, customStage);
     }
 

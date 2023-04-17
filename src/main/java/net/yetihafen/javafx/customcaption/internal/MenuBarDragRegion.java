@@ -1,17 +1,12 @@
 package net.yetihafen.javafx.customcaption.internal;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.MenuBar;
 import javafx.scene.layout.HBox;
 import net.yetihafen.javafx.customcaption.DragRegion;
 
-import java.net.URL;
-import java.util.ResourceBundle;
 
-public class MenuBarDragRegion extends DragRegion implements ShowInitializable {
+public class MenuBarDragRegion extends DragRegion {
 
     public MenuBarDragRegion(MenuBar base) {
         super(base);
