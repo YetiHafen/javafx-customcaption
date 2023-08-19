@@ -1,3 +1,4 @@
+[![](https://img.shields.io/maven-central/v/net.yetihafen/javafx-customcaption)](#get-this-library)
 [![](https://jitpack.io/v/YetiHafen/javafx-customcaption.svg)](https://jitpack.io/#YetiHafen/javafx-customcaption)
 
 
@@ -113,37 +114,27 @@ public class HelloApplication extends Application {
 
 
 ## Get this library:
+[![](https://img.shields.io/maven-central/v/net.yetihafen/javafx-customcaption)](https://central.sonatype.com/artifact/net.yetihafen/javafx-customcaption)
 [![](https://jitpack.io/v/YetiHafen/javafx-customcaption.svg)](https://jitpack.io/#YetiHafen/javafx-customcaption)
 
-This library is currently available on JitPack include it as a dependency for your project like this:
+This library is available on maven central include it as a dependency for your project like this:
 
-(replace "TAG" with the current version shown above or visit jitpack for more information)
+(replace "TAG" with the current version shown above or visit 
+[this page](https://central.sonatype.com/artifact/net.yetihafen/javafx-customcaption)
+for more information)
 
-maven:
-```xml
-<repositories>
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
-</repositories>
-```
+### maven:
 ```xml
 <dependency>
-    <groupId>com.github.YetiHafen</groupId>
+    <groupId>net.yetihafen</groupId>
     <artifactId>javafx-customcaption</artifactId>
     <version>TAG</version>
 </dependency>
 ```
 
-gradle:
-```groovy
-repositories {
-    maven { url 'https://jitpack.io' }
-}
-```
+### gradle:
 ```groovy
 dependencies {
-    implementation 'com.github.YetiHafen:javafx-customcaption:TAG'
+    implementation 'net.yetihafen:javafx-customcaption:TAG'
 }
 ```
