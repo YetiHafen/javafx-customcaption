@@ -5,9 +5,6 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.0.10'
 }
 
-group 'net.yetihafen'
-version '1.0-SNAPSHOT'
-
 repositories {
     mavenCentral()
 }
@@ -57,10 +54,20 @@ signing {
     sign publishing.publications
 }
 
+publishToMavenLocal {
+    signing {
+        required false
+    }
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+
+            groupId 'net.yetihafen'
+            artifactId 'javafx-customcaption'
+            version rootProject.properties.version
 
             pom {
                 name = 'javafx-customcaption'
