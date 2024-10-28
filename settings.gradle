@@ -1,2 +1,3 @@
 rootProject.name = 'javafx-customcaption'
+include 'core'
 
