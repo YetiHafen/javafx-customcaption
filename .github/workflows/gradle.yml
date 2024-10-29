@@ -13,21 +13,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+
     - name: Set up JDK 17
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
+
     - name: Build with Gradle
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
-        arguments: javadoc
+        arguments: core:javadoc
 
     - name: Deploy to Netlify
-      uses: jsmrcaga/action-netlify-deploy@v1.1.0
+      uses: jsmrcaga/action-netlify-deploy@v2.0.0
       with:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         NETLIFY_DEPLOY_TO_PROD: true
-        build_directory: build/docs/javadoc
+        build_directory: core/build/docs/javadoc
+        install_command: ':'
+        build_command: ':'
