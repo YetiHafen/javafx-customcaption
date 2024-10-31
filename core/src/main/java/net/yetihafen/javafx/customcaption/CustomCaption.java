@@ -59,4 +59,8 @@ public class CustomCaption {
     public static boolean setImmersiveDarkMode(Stage stage, boolean enabled) {
         return NativeUtilities.setImmersiveDarkMode(stage, enabled);
     }
+
+    public static boolean setBorderColor(Stage stage, Color color) {
+        return NativeUtilities.setBorderColor(stage, color);
+    }
 }
