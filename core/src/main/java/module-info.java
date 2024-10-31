@@ -9,6 +9,7 @@ module net.yetihafen.javafx.customcaption {
 
     requires lombok;
     requires org.jetbrains.annotations;
+    requires java.desktop;
 
     opens net.yetihafen.javafx.customcaption.internal.structs to com.sun.jna;
     opens net.yetihafen.javafx.customcaption.internal to javafx.fxml;
