@@ -17,6 +17,21 @@ methods to change the color for your specific stage.
 Keep in mind that those methods are only available on newer versions of Windows and might not work on every system.
 (setCaptionColor only works on Windows 11)
 
+Example:
+
+```java
+@Override
+public void start(Stage stage) throws Exception {
+    // initialize empty window
+    Scene scene = new Scene(new Pane());
+    stage.setScene(scene);
+    stage.setTitle("customcaption-demo");
+    stage.show();
+    CustomCaption.setCaptionColor(stage, Color.AQUA); // change caption color (only Win11)
+    CustomCaption.setImmersiveDarkMode(stage, true); // works on Win10 but not officially documented
+}
+```
+
 ## Advanced Usage:
 You can use the following code to remove the default caption while re-adding
 native looking window controls
