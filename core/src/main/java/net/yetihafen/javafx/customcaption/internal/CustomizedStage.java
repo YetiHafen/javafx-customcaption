@@ -19,6 +19,7 @@ import javafx.scene.robot.Robot;
 import javafx.stage.Stage;
 import lombok.Getter;
 import net.yetihafen.javafx.customcaption.CaptionConfiguration;
+import net.yetihafen.javafx.customcaption.ComplexCustomStage;
 import net.yetihafen.javafx.customcaption.DragRegion;
 import net.yetihafen.javafx.customcaption.internal.libraries.User32Ex;
 import net.yetihafen.javafx.customcaption.internal.structs.NCCALCSIZE_PARAMS;
@@ -29,7 +30,7 @@ import java.io.IOException;
 import static com.sun.jna.platform.win32.WinUser.*;
 
 
-public class CustomizedStage {
+public class CustomizedStage implements ComplexCustomStage {
 
     @Getter
     private final Stage stage;

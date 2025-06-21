@@ -2,20 +2,20 @@ package net.yetihafen.javafx.customcaption;
 
 import javafx.scene.paint.Color;
 import net.yetihafen.javafx.customcaption.internal.Util;
+import org.jetbrains.annotations.NotNull;
 
-public interface ICustomStage {
+public interface BasicCustomStage extends CustomStage {
 
     boolean useImmersiveDarkMode(boolean enabled);
     boolean setCaptionColor(int rgb);
     boolean setBorderColor(int rgb);
-    void removeCustomization();
 
 
     default boolean setCaptionColor(Color color) {
         return setCaptionColor(Util.colorToRgb(color));
     }
 
-    default boolean setCaptionColor(java.awt.Color color) {
+    default boolean setCaptionColor(@NotNull java.awt.Color color) {
         return setCaptionColor(color.getRGB());
     }
 
@@ -23,7 +23,7 @@ public interface ICustomStage {
         return setBorderColor(Util.colorToRgb(color));
     }
 
-    default boolean setBorderColor(java.awt.Color color) {
+    default boolean setBorderColor(@NotNull java.awt.Color color) {
         return setBorderColor(color.getRGB());
     }
 }
