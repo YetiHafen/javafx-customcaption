@@ -35,12 +35,11 @@ public class NativeUtilities {
     /**
      * Enables/disables the Immersive Dark Mode for a specified stage
      * officially only supported (documented) since Win 11 Build 22000
-     * @param stage the stage to enable the Dark mode for
+     * @param hWnd the Window handle to enable the Dark mode for
      * @param enabled if immersive dark mod should be enabled
      * @return if Immersive Dark Mode could be enabled successfully
      */
-    public static boolean setImmersiveDarkMode(Stage stage, boolean enabled) {
-        WinDef.HWND hWnd = getHwnd(stage);
+    public static boolean setImmersiveDarkMode(WinDef.HWND hWnd, boolean enabled) {
         WinNT.HRESULT res = DwmApi.INSTANCE.DwmSetWindowAttribute(hWnd, DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, new IntByReference(enabled ? 1 : 0), 4);
         return res.longValue() >= 0;
     }
@@ -48,30 +47,37 @@ public class NativeUtilities {
     /**
      * Sets the Caption Color of the specified Stage to the specified Color
      * this does only work since Win 11 Build 22000
-     * @param stage the Stage to change the Caption Color
+     * @param hWnd the window handle to change the Caption Color
      * @param color the Color to use
      * @return if the change was successful
      */
-    public static boolean setCaptionColor(Stage stage, Color color) {
-        WinDef.HWND hWnd = getHwnd(stage);
+    public static boolean setCaptionColor(WinDef.HWND hWnd, Color color) {
         int red = (int) (color.getRed() * 255);
         int green = (int) (color.getGreen() * 255);
         int blue = (int) (color.getBlue() * 255);
+
+        return setCaptionColor(hWnd, red << 16 | green << 8 | blue);
+    }
+
+    public static boolean setCaptionColor(WinDef.HWND hWnd, int rgb) {
+        int red = (rgb & 0xFF0000) >> 16;
+        int green = (rgb & 0x00FF00) >> 8;
+        int blue = rgb & 0x0000FF;
         // win api accepts the colors in reverse order
-        int rgb = red + (green << 8) + (blue << 16);
-        WinNT.HRESULT res = DwmApi.INSTANCE.DwmSetWindowAttribute(hWnd, DWMWINDOWATTRIBUTE.DWMWA_CAPTION_COLOR, new IntByReference(rgb), 4);
+        int bgr = red + (green << 8) + (blue << 16);
+        WinNT.HRESULT res = DwmApi.INSTANCE.DwmSetWindowAttribute(hWnd, DWMWINDOWATTRIBUTE.DWMWA_CAPTION_COLOR, new IntByReference(bgr), 4);
         return res.longValue() >= 0;
     }
 
     /**
      * sets the caption to the specified color if supported
      * if not supported uses immersive dark mode if color is mostly dark
-     * @param stage the stage to modify
+     * @param hWnd the window handle to modify
      * @param color the color to set the caption
      * @return if the stage was modified
      */
-    public static boolean customizeCation(Stage stage, Color color) {
-        boolean success = setCaptionColor(stage, color);
+    public static boolean customizeCation(WinDef.HWND hWnd, Color color) {
+        boolean success = setCaptionColor(hWnd, color);
         if(!success) {
             int red = (int) (color.getRed() * 255);
             int green = (int) (color.getGreen() * 255);
@@ -79,7 +85,7 @@ public class NativeUtilities {
             int colorSum = red + green + blue;
 
             boolean dark = colorSum < 255 * 3 / 2;
-            success = setImmersiveDarkMode(stage, dark);
+            success = setImmersiveDarkMode(hWnd, dark);
         }
         return success;
     }

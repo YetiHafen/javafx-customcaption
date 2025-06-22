@@ -30,13 +30,9 @@ import java.io.IOException;
 import static com.sun.jna.platform.win32.WinUser.*;
 
 
-public class CustomizedStage implements ComplexCustomStage {
-
-    @Getter
-    private final Stage stage;
+public class CustomizedStage extends CustomStageBase implements ComplexCustomStage {
     @Getter
     private CaptionConfiguration config;
-    private WinDef.HWND hWnd;
     private BaseTSD.LONG_PTR defWndProc;
     private WndProc wndProc;
 
@@ -51,7 +47,7 @@ public class CustomizedStage implements ComplexCustomStage {
     private Node minimizeButton;
 
     public CustomizedStage(Stage stage, CaptionConfiguration config) {
-        this.stage = stage;
+        super(stage);
         this.config = config;
         stage.showingProperty().addListener(this::onShowUpdate);
 
@@ -66,14 +62,9 @@ public class CustomizedStage implements ComplexCustomStage {
             config.showInit();
         }
 
-        HWND updatedHwnd = NativeUtilities.getHwnd(stage);
-
-        if(updatedHwnd != null)
-            this.hWnd = updatedHwnd;
-
 
         if(newVal) {
-            User32Ex.INSTANCE.SetWindowLongPtr(hWnd, GWL_WNDPROC, wndProc);
+            User32Ex.INSTANCE.SetWindowLongPtr(getHwnd(), GWL_WNDPROC, wndProc);
             refreshStageBounds();
         }
     }
@@ -81,33 +72,32 @@ public class CustomizedStage implements ComplexCustomStage {
     public void inject() {
         this.isInjected = true;
 
-        this.hWnd = NativeUtilities.getHwnd(stage);
         this.wndProc = new WndProc();
-        this.defWndProc = User32Ex.INSTANCE.SetWindowLongPtr(hWnd, WinUser.GWL_WNDPROC, wndProc);
+        this.defWndProc = User32Ex.INSTANCE.SetWindowLongPtr(getHwnd(), WinUser.GWL_WNDPROC, wndProc);
 
         refreshStageBounds();
 
-        stage.getScene().rootProperty().addListener(this::onParentChange);
-        stage.sceneProperty().addListener(this::onSceneChange);
+        getStage().getScene().rootProperty().addListener(this::onParentChange);
+        getStage().sceneProperty().addListener(this::onSceneChange);
         if(config.isUseControls())
-            addControlsToParent(stage.getScene().getRoot());
+            addControlsToParent(getStage().getScene().getRoot());
     }
 
     public void release() {
         this.isInjected = false;
         // release listeners
-        stage.sceneProperty().removeListener(this::onSceneChange);
-        stage.getScene().rootProperty().removeListener(this::onParentChange);
+        getStage().sceneProperty().removeListener(this::onSceneChange);
+        getStage().getScene().rootProperty().removeListener(this::onParentChange);
 
         // remove customized caption
         if(this.isRootReplaced) {
-            StackPane root = (StackPane) stage.getScene().getRoot();
+            StackPane root = (StackPane) getStage().getScene().getRoot();
             Parent newParent = (Parent) root.getChildren().get(0);
             root.getChildren().clear();
-            stage.getScene().setRoot(newParent);
+            getStage().getScene().setRoot(newParent);
         }
 
-        User32Ex.INSTANCE.SetWindowLongPtr(hWnd, WinUser.GWL_WNDPROC, defWndProc);
+        User32Ex.INSTANCE.SetWindowLongPtr(getHwnd(), WinUser.GWL_WNDPROC, defWndProc);
 
         refreshStageBounds();
     }
@@ -117,8 +107,8 @@ public class CustomizedStage implements ComplexCustomStage {
      */
     public void refreshStageBounds() {
         WinDef.RECT rect = new WinDef.RECT();
-        User32Ex.INSTANCE.GetWindowRect(hWnd, rect);
-        User32Ex.INSTANCE.SetWindowPos(hWnd, null, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, WinUser.SWP_FRAMECHANGED);
+        User32Ex.INSTANCE.GetWindowRect(getHwnd(), rect);
+        User32Ex.INSTANCE.SetWindowPos(getHwnd(), null, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, WinUser.SWP_FRAMECHANGED);
     }
 
     private void onParentChange(ObservableValue<? extends Parent> observable, Parent oldVal, Parent newVal) {
@@ -143,7 +133,7 @@ public class CustomizedStage implements ComplexCustomStage {
         newRoot.getChildren().add(captionControls);
 
         newRoot.setAlignment(Pos.TOP_RIGHT);
-        stage.getScene().setRoot(newRoot);
+        getStage().getScene().setRoot(newRoot);
     }
 
     private void initControls() {
@@ -341,7 +331,7 @@ public class CustomizedStage implements ComplexCustomStage {
             boolean maximized = NativeUtilities.isMaximized(hWnd);
 
 
-            if(maximized && !stage.isFullScreen()) {
+            if(maximized && !getStage().isFullScreen()) {
                 newSize.top += NativeUtilities.getResizeHandleHeight(hWnd);
             }
 

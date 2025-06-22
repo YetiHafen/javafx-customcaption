@@ -1,8 +1,6 @@
 package net.yetihafen.javafx.customcaption;
 
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import net.yetihafen.javafx.customcaption.internal.NativeUtilities;
 import net.yetihafen.javafx.customcaption.internal.StageManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,24 +37,11 @@ public class CustomCaption {
     }
 
     /**
-     * Sets the Caption Color of the specified Stage to the specified Color
-     * this does only work since Win 11 Build 22000
-     * @param stage the Stage to change the Caption Color
-     * @param color the Color to use
-     * @return if the change was successful
+     * Used to create a {@code BasicCustomStage}
+     * @param stage the stage to customize
+     * @return the {@code BasicCustomStage} you can use to customize the stage
      */
-    public static boolean setCaptionColor(Stage stage, Color color) {
-        return NativeUtilities.setCaptionColor(stage, color);
-    }
-
-    /**
-     * Enables/disables the Immersive Dark Mode for a specified stage
-     * officially only supported (documented) since Win 11 Build 22000
-     * @param stage the stage to enable the Dark mode for
-     * @param enabled if immersive dark mod should be enabled
-     * @return if Immersive Dark Mode could be enabled successfully
-     */
-    public static boolean setImmersiveDarkMode(Stage stage, boolean enabled) {
-        return NativeUtilities.setImmersiveDarkMode(stage, enabled);
+    public static BasicCustomStage useBasic(Stage stage) {
+        return stageManager.registerBasicStage(stage);
     }
 }
