@@ -7,17 +7,47 @@
 javafx-customcaption is designed to allow customizing
 the native window caption on Microsoft Windows
 
-## Simple Usage:
-If you just want to change the color of your window caption you can
-use the
-[setImmersiveDarkMode](https://jfxccdocs.yetihafen.net/net.yetihafen.javafx.customcaption/net/yetihafen/javafx/customcaption/customcaption#setImmersiveDarkMode(javafx.stage.Stage,boolean))
-or
-[setCaptionColor](https://jfxccdocs.yetihafen.net/net.yetihafen.javafx.customcaption/net/yetihafen/javafx/customcaption/customcaption#setCaptionColor(javafx.stage.Stage,javafx.scene.paint.Color))
-methods to change the color for your specific stage.
-Keep in mind that those methods are only available on newer versions of Windows and might not work on every system.
-(setCaptionColor only works on Windows 11)
+# Usage:
+To modify a stage you need to create a [CustomStage](https://jfxccdocs.yetihafen.net/net.yetihafen.javafx.customcaption/net/yetihafen/javafx/customcaption/customstage).
+This can either be a [BasicCustomStage](https://jfxccdocs.yetihafen.net/net.yetihafen.javafx.customcaption/net/yetihafen/javafx/customcaption/basiccustomstage)
+or a [ComplexCustomStage](https://jfxccdocs.yetihafen.net/net.yetihafen.javafx.customcaption/net/yetihafen/javafx/customcaption/complexcustomstage)
+you can then use those to apply modifications to your JavaFX stage.
 
-## Advanced Usage:
+## BasicCustomStage:
+If you just want to change the color of your window caption or border without requiring
+customized window controls you can use the
+[CustomStage#useBasic](https://jfxccdocs.yetihafen.net/net.yetihafen.javafx.customcaption/net/yetihafen/javafx/customcaption/customcaption#useBasic(javafx.stage.Stage))
+class method to get an instance of [BasicCustomStage](https://jfxccdocs.yetihafen.net/net.yetihafen.javafx.customcaption/net/yetihafen/javafx/customcaption/basiccustomstage)
+which can then be used to apply your customizations.
+
+#### Example:
+```java
+public class HelloApplication extends Application {
+    
+    @Override
+    public void start(Stage stage) throws Exception {
+        // initialize empty window
+        Scene scene = new Scene(new Pane());
+        stage.setScene(scene);
+        stage.setTitle("customcaption-demo");
+        stage.show();
+        
+        // create the BasicCustomStage
+        BasicCustomStage customStage = CustomCaption.useBasic(stage);
+        // apply your customizations
+        customStage.setCaptionColor(Color.RED); 
+    }
+}
+```
+
+## ComplexCustomStage:
+If you want to change more than colors and want to replace the default window controls
+to e.g. place your application controls inside the caption space you need to utilize the [ComplexCustomStage](https://jfxccdocs.yetihafen.net/net.yetihafen.javafx.customcaption/net/yetihafen/javafx/customcaption/complexcustomstage)
+
+This method currently only supports an initial configuration at the start without the
+possibility to change it later (if you want to change something remove the customization and create new)
+
+#### Example:
 You can use the following code to remove the default caption while re-adding
 native looking window controls
 ```java
@@ -40,7 +70,7 @@ public class HelloApplication extends Application {
 When using `CustomCaption.useForStage()` you can pass an additional argument
 specifying additional information about the controls that will be drawn.
 
-**Example:**
+#### Example:
 ```java
 CustomCaption.useForStage(stage, new CaptionConfiguration(
         40, // caption height
