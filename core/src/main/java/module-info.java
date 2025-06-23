@@ -7,7 +7,7 @@ module net.yetihafen.javafx.customcaption {
     requires com.sun.jna.platform;
     requires com.sun.jna;
 
-    requires lombok;
+    requires static lombok;
     requires org.jetbrains.annotations;
     requires java.desktop;
 
