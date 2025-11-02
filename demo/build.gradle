@@ -15,8 +15,8 @@ ext {
     junitVersion = '5.10.2'
 }
 
-sourceCompatibility = '21'
-targetCompatibility = '21'
+sourceCompatibility = '17'
+targetCompatibility = '17'
 
 tasks.build.dependsOn(":core:publishToMavenLocal")
 tasks.run.dependsOn(":core:publishToMavenLocal")
