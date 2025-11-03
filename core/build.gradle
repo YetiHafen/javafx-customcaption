@@ -88,13 +88,20 @@ publishing {
                 scm {
                     url = "https://github.com/YetiHafen/javafx-customcaption"
                 }
+                developers {
+                    developer {
+                        id = 'yetihafen'
+                        name = 'YetiHafen'
+                        email = 'yetihafen@yetihafen.net'
+                    }
+                }
             }
         }
     }
     repositories {
         maven {
-            def releaseUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2"
-            def snapshotUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots"
+            def releaseUrl = "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
+            def snapshotUrl = "https://ossrh-staging-api.central.sonatype.com/content/repositories/snapshots"
             url = version.endsWith('SNAPSHOT') ? snapshotUrl : releaseUrl
             credentials {
                 username = project.hasProperty("ossrhUsername") ? ossrhUsername : ""
