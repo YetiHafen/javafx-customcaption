@@ -52,14 +52,14 @@ java {
     withSourcesJar()
 }
 
-signing {
-    sign publishing.publications
+gradle.taskGraph.whenReady { graph ->
+    signing {
+        required = !graph.hasTask(':core:publishToMavenLocal')
+    }
 }
 
-publishToMavenLocal {
-    signing {
-        required false
-    }
+signing {
+    sign publishing.publications
 }
 
 javadoc {
