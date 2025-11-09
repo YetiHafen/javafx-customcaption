@@ -1,5 +1,6 @@
 package net.yetihafen.demo;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -18,9 +19,17 @@ public class DemoApplication extends Application {
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
-
         BasicCustomStage customStage = CustomCaption.useBasic(stage);
-        customStage.setCaptionColor(Color.BLUE);
+
+        AnimationTimer t = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                Color c = Color.hsb((now / 10000000.0) % 360, 1, 1);
+                customStage.setBorderColor(c);
+                customStage.setCaptionColor(c);
+            }
+        };
+        t.start();
     }
 
     public static void main(String[] args) {

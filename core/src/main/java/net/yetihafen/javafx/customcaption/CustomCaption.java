@@ -44,4 +44,8 @@ public class CustomCaption {
     public static BasicCustomStage useBasic(Stage stage) {
         return stageManager.registerBasicStage(stage);
     }
+
+    public static boolean setBorderColor(Stage stage, Color color) {
+        return NativeUtilities.setBorderColor(stage, color);
+    }
 }

@@ -90,6 +90,18 @@ public class NativeUtilities {
         return success;
     }
 
+    public static boolean setBorderColor(Stage stage, Color color) {
+        WinDef.HWND hWnd = getHwnd(stage);
+        int red = (int) (color.getRed() * 255);
+        int green = (int) (color.getGreen() * 255);
+        int blue = (int) (color.getBlue() * 255);
+        // win api accepts the colors in reverse order
+        int rgb = red + (green << 8) + (blue << 16);
+        WinNT.HRESULT res = DwmApi.INSTANCE.DwmSetWindowAttribute(hWnd, DWMWINDOWATTRIBUTE.DWMWA_BORDER_COLOR, new IntByReference(rgb), 4);
+        return res.longValue() >= 0;
+    }
+
+
     public static boolean isMaximized(WinDef.HWND hWnd) {
         BaseTSD.LONG_PTR windowStyle = User32Ex.INSTANCE.GetWindowLongPtr(hWnd, WinUser.GWL_STYLE);
         return (windowStyle.longValue() & WinUser.WS_MAXIMIZE) == WinUser.WS_MAXIMIZE;

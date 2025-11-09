@@ -2,7 +2,7 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'signing'
-    id 'org.openjfx.javafxplugin' version '0.0.10'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
 }
 
 repositories {
@@ -13,7 +13,9 @@ sourceCompatibility = '17'
 targetCompatibility = '17'
 
 javafx {
+    version = '21'
     modules = ['javafx.controls', 'javafx.fxml']
+    configuration = 'compileOnly'
 }
 
 dependencies {
@@ -53,14 +55,14 @@ java {
     withSourcesJar()
 }
 
-signing {
-    sign publishing.publications
+gradle.taskGraph.whenReady { graph ->
+    signing {
+        required = !graph.hasTask(':core:publishToMavenLocal')
+    }
 }
 
-publishToMavenLocal {
-    signing {
-        required false
-    }
+signing {
+    sign publishing.publications
 }
 
 javadoc {
@@ -89,13 +91,20 @@ publishing {
                 scm {
                     url = "https://github.com/YetiHafen/javafx-customcaption"
                 }
+                developers {
+                    developer {
+                        id = 'yetihafen'
+                        name = 'YetiHafen'
+                        email = 'yetihafen@yetihafen.net'
+                    }
+                }
             }
         }
     }
     repositories {
         maven {
-            def releaseUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2"
-            def snapshotUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots"
+            def releaseUrl = "https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/"
+            def snapshotUrl = "https://ossrh-staging-api.central.sonatype.com/content/repositories/snapshots"
             url = version.endsWith('SNAPSHOT') ? snapshotUrl : releaseUrl
             credentials {
                 username = project.hasProperty("ossrhUsername") ? ossrhUsername : ""
