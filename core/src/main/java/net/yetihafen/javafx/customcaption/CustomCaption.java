@@ -1,6 +1,8 @@
 package net.yetihafen.javafx.customcaption;
 
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import net.yetihafen.javafx.customcaption.internal.NativeUtilities;
 import net.yetihafen.javafx.customcaption.internal.StageManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,6 +47,15 @@ public class CustomCaption {
         return stageManager.registerBasicStage(stage);
     }
 
+    /**
+     * Sets the Border Color of the specified Stage to the specified Color
+     * this does only work since Win 11 Build 22000
+     * @param stage the stage to change the Border Color
+     * @param color the Color to use
+     * @return if the change was successful
+     * @deprecated Native Window Handle is not cached, use {@link BasicCustomStage#setBorderColor(Color)} instead
+     */
+    @Deprecated
     public static boolean setBorderColor(Stage stage, Color color) {
         return NativeUtilities.setBorderColor(stage, color);
     }
