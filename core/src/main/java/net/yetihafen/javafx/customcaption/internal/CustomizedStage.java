@@ -29,7 +29,7 @@ import java.io.IOException;
 import static com.sun.jna.platform.win32.WinUser.*;
 
 
-public class CustomizedStage {
+public class CustomizedStage implements ShowInitializable {
 
     @Getter
     private final Stage stage;
@@ -55,7 +55,14 @@ public class CustomizedStage {
         stage.showingProperty().addListener(this::onShowUpdate);
 
         if(stage.isShowing())
-            inject();
+            showInit();
+    }
+
+
+    @Override
+    public void showInit() {
+        inject();
+        config.showInit();
     }
 
     private void onShowUpdate(Observable observable, boolean oldVal, boolean newVal) {
