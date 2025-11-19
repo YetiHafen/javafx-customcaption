@@ -1,33 +1,43 @@
 package net.yetihafen.demo;
 
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.MenuBar;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import net.yetihafen.javafx.customcaption.CaptionConfiguration;
 import net.yetihafen.javafx.customcaption.CustomCaption;
 
-import java.io.IOException;
 
 public class DemoApplication extends Application {
     @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(DemoApplication.class.getResource("hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
+    public void start(Stage stage) throws Exception {
+
+        // initialize FXMLLoader
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("complex-application.fxml"));
+        // load the contents of the fxml file
+        Parent root = loader.load();
+
+        // create scene with loaded contents
+        Scene scene = new Scene(root);
+
+        // start stage with specified scene
         stage.setScene(scene);
+        stage.setTitle("customcaption-demo");
         stage.show();
 
-        AnimationTimer t = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                Color c = Color.hsb((now / 10000000.0) % 360, 1, 1);
-                CustomCaption.setBorderColor(stage, c);
-                CustomCaption.setCaptionColor(stage, c);
-            }
-        };
-        t.start();
+
+        // get MenuBar to supply as DragRegion
+        MenuBar bar = (MenuBar) loader.getNamespace().get("menuBar");
+
+        // apply customizations
+        CustomCaption.useForStage(stage, new CaptionConfiguration()
+                        .setIconColor(Color.BLACK)  // set the icon/foreground color to black
+                        .setCaptionDragRegion(bar)  // set the MenuBar as DragRegion to exclude the
+                                                    // buttons automatically
+        );
     }
 
     public static void main(String[] args) {
