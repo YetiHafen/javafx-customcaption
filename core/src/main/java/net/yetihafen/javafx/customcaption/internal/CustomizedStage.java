@@ -309,7 +309,11 @@ public class CustomizedStage implements ShowInitializable {
                 if(closeButtonBounds.contains(mousePosScreen)) {
                     return new WinDef.LRESULT(HTCLOSE);
                 } else if(maximizeButtonBounds.contains(mousePosScreen)) {
-                    return new WinDef.LRESULT(HTMAXBUTTON);
+                    // disable maximize button if stage is not resizable
+                    if (stage.isResizable())
+                        return new WinDef.LRESULT(HTMAXBUTTON);
+                    else
+                        return res;
                 } else if(minimizeButtonBounds.contains(mousePosScreen)) {
                     return new WinDef.LRESULT(HTMINBUTTON);
                 }
