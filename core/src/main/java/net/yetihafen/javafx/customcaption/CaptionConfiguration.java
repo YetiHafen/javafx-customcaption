@@ -3,6 +3,7 @@ package net.yetihafen.javafx.customcaption;
 
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.scene.control.MenuBar;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -33,6 +34,20 @@ public class CaptionConfiguration implements ShowInitializable {
     private boolean useControls = true;
 
     private DragRegion captionDragRegion;
+
+    /**
+     * Optional host pane for the library's caption controls.
+     *
+     * <p>When set, the library will <b>not</b> replace the scene root.
+     * Instead, the caption controls are added as a child of this pane
+     * and aligned to the center-right corner. This preserves the caller's
+     * scene-root identity, CSS theme classes, and inline styles.
+     *
+     * <p>When {@code null} (default), the library falls back to the legacy
+     * behavior of wrapping the scene root in a StackPane, which breaks
+     * {@code scene.getRoot()} expectations and moves theme classes around.
+     */
+    private Pane captionHost;
 
 
     public CaptionConfiguration() {
@@ -148,6 +163,23 @@ public class CaptionConfiguration implements ShowInitializable {
      */
     public CaptionConfiguration setCaptionDragRegion(MenuBar menuBar) {
         this.captionDragRegion = new MenuBarDragRegion(menuBar);
+        return this;
+    }
+
+    /**
+     * Sets the pane where the library's caption controls should be placed.
+     *
+     * <p>Use a {@link javafx.scene.layout.StackPane} that wraps your header
+     * bar. The controls will be aligned to the center-right of that pane.
+     * Other Pane subclasses are supported but positioning is left to the
+     * caller's layout.
+     *
+     * @param captionHost host pane for caption controls, or {@code null}
+     *                    to use the legacy scene-root wrapping behavior
+     * @return this configuration for chaining
+     */
+    public CaptionConfiguration setCaptionHost(Pane captionHost) {
+        this.captionHost = captionHost;
         return this;
     }
 
