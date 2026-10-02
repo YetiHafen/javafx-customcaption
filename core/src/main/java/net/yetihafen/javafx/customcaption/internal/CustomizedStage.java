@@ -3,6 +3,8 @@ package net.yetihafen.javafx.customcaption.internal;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.BaseTSD;
 import com.sun.jna.platform.win32.WinDef;
+import com.sun.jna.platform.win32.WinDef.HWND;
+import com.sun.jna.platform.win32.WinDef.LRESULT;
 import com.sun.jna.platform.win32.WinUser;
 import javafx.beans.Observable;
 import javafx.beans.value.ObservableValue;
@@ -15,6 +17,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.robot.Robot;
 import javafx.stage.Stage;
 import lombok.Getter;
@@ -93,24 +96,43 @@ public class CustomizedStage implements ShowInitializable {
 
         refreshStageBounds();
 
-        stage.getScene().rootProperty().addListener(this::onParentChange);
-        stage.sceneProperty().addListener(this::onSceneChange);
-        if(config.isUseControls())
+        if (!config.isUseControls()) {
+            return;
+        }
+
+        Pane host = config.getCaptionHost();
+        if (host != null) {
+            // New path: mount controls into a caller-provided Pane.
+            // The scene root is NOT touched.
+            addControlsToHost(host);
+        } else {
+            // Legacy path: wrap the scene root and keep tracking it.
+            stage.getScene().rootProperty().addListener(this::onParentChange);
+            stage.sceneProperty().addListener(this::onSceneChange);
             addControlsToParent(stage.getScene().getRoot());
+        }
     }
 
     public void release() {
         this.isInjected = false;
-        // release listeners
-        stage.sceneProperty().removeListener(this::onSceneChange);
-        stage.getScene().rootProperty().removeListener(this::onParentChange);
 
-        // remove customized caption
-        if(this.isRootReplaced) {
-            StackPane root = (StackPane) stage.getScene().getRoot();
-            Parent newParent = (Parent) root.getChildren().get(0);
-            root.getChildren().clear();
-            stage.getScene().setRoot(newParent);
+        if (config.getCaptionHost() != null) {
+            // Host mode: just detach our controls from the host.
+            if (captionControls != null && captionControls.getParent() instanceof Pane hostPane) {
+                hostPane.getChildren().remove(captionControls);
+            }
+        } else {
+            // Legacy root-swap mode.
+            stage.sceneProperty().removeListener(this::onSceneChange);
+            if (stage.getScene() != null) {
+                stage.getScene().rootProperty().removeListener(this::onParentChange);
+                if (this.isRootReplaced) {
+                    StackPane root = (StackPane) stage.getScene().getRoot();
+                    Parent newParent = (Parent) root.getChildren().get(0);
+                    root.getChildren().clear();
+                    stage.getScene().setRoot(newParent);
+                }
+            }
         }
 
         User32Ex.INSTANCE.SetWindowLongPtr(hWnd, WinUser.GWL_WNDPROC, defWndProc);
@@ -135,9 +157,33 @@ public class CustomizedStage implements ShowInitializable {
 
     private void onSceneChange(ObservableValue<? extends Scene> observable, Scene oldVal, Scene newVal) {
         if(!isInjected) return;
-        oldVal.rootProperty().removeListener(this::onParentChange);
+        if (oldVal != null) oldVal.rootProperty().removeListener(this::onParentChange);
         newVal.rootProperty().addListener(this::onParentChange);
         addControlsToParent(newVal.getRoot());
+    }
+
+    /**
+     * Installs the library's caption controls into a caller-provided Pane
+     * without modifying the scene root.
+     *
+     * <p>The controls are added as the last child of {@code host}. If
+     * {@code host} is a {@link StackPane}, the controls are aligned to the
+     * center-right corner, which matches the native Windows caption button
+     * placement. For other Pane subclasses, the caller is responsible for
+     * positioning (for example, by wrapping the header bar in a StackPane).
+     *
+     * @param host the pane that will host the caption controls
+     */
+    private void addControlsToHost(Pane host) {
+        // Mark as installed so WndProc knows to hit-test the buttons.
+        this.isRootReplaced = true;
+
+        initControls();
+
+        host.getChildren().add(captionControls);
+        if (host instanceof StackPane stack) {
+            StackPane.setAlignment(captionControls, Pos.CENTER_RIGHT);
+        }
     }
 
     private void addControlsToParent(Parent parent) {
